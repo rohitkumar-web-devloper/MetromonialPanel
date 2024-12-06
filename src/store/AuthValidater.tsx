@@ -17,7 +17,8 @@ export const useAuthValidator = create<StoreState>()(persist((set) => ({
     handleUserDetails: (value: { [key: string]: string }) => set(() => {
         return { user: value };
     }),
-}), {
-    name: "auth-storage",
-    getStorage: () => localStorage,
-}))
+}),
+    {
+        name: "auth-storage",
+        getStorage: () => localStorage,
+    }))

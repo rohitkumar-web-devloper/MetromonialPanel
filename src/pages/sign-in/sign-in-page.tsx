@@ -5,18 +5,19 @@ import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Checkbox from '@mui/material/Checkbox';
 import FormControlLabel from '@mui/material/FormControlLabel';
-import Divider from '@mui/material/Divider';
 import FormLabel from '@mui/material/FormLabel';
 import FormControl from '@mui/material/FormControl';
-import Link from '@mui/material/Link';
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
 import Stack from '@mui/material/Stack';
 import MuiCard from '@mui/material/Card';
 import { styled } from '@mui/material/styles';
-import { GoogleIcon, FacebookIcon, SitemarkIcon } from '@/svgs';
+import { SitemarkIcon } from '@/svgs';
 import { useAuthValidator } from '@/store';
 import { useNavigate } from 'react-router-dom';
+import { useMutation } from '@apollo/client';
+import { USER_LOGIN_POST } from '@/GraphQl';
+import { notify } from '@/components';
 // import ColorModeSelect from '../shared-theme/ColorModeSelect';
 
 const Card = styled(MuiCard)(({ theme }) => ({
@@ -62,31 +63,30 @@ const SignInContainer = styled(Stack)(({ theme }) => ({
 }));
 
 export function SignInPage() {
-    const { isAuthenticate, handleAuthenticate, handleUserDetails } = useAuthValidator((state: { isAuthenticate: boolean, handleAuthenticate: (value: boolean) => void, handleUserDetails: (value: { [key: string]: string }) => void }) => state)
+    const { handleAuthenticate, handleUserDetails } = useAuthValidator((state: { isAuthenticate: boolean, handleAuthenticate: (value: boolean) => void, handleUserDetails: (value: { [key: string]: string }) => void }) => state)
     const navigate = useNavigate()
     const [emailError, setEmailError] = React.useState(false);
     const [emailErrorMessage, setEmailErrorMessage] = React.useState('');
-    const [passwordError, setPasswordError] = React.useState(false);
-    const [passwordErrorMessage, setPasswordErrorMessage] = React.useState('');
-
-    const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+    const [loginUser, { loading }] = useMutation(USER_LOGIN_POST);
+    const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
-        if (emailError || passwordError) {
+        if (emailError) {
             return;
         }
-        const data = new FormData(event.currentTarget);
-        console.log({
-            email: data.get('email'),
-            password: data.get('password'),
-        });
-        handleAuthenticate(true)
-        navigate('/')
-
+        const formdata = new FormData(event.currentTarget);
+        const { data, errors } = await loginUser({ variables: { email: formdata.get('email'), password: formdata.get('password') } });
+        if (errors) {
+            return notify(errors.at(-1)?.message)
+        }
+        if (data) {
+            handleUserDetails(data?.loginUser)
+            handleAuthenticate(true)
+            navigate('/')
+        }
     };
 
     const validateInputs = () => {
         const email = document.getElementById('email') as HTMLInputElement;
-        const password = document.getElementById('password') as HTMLInputElement;
 
         let isValid = true;
 
@@ -99,21 +99,11 @@ export function SignInPage() {
             setEmailErrorMessage('');
         }
 
-        if (!password.value || password.value.length < 6) {
-            setPasswordError(true);
-            setPasswordErrorMessage('Password must be at least 6 characters long.');
-            isValid = false;
-        } else {
-            setPasswordError(false);
-            setPasswordErrorMessage('');
-        }
-
         return isValid;
     };
 
     return (
         <SignInContainer direction="column" justifyContent="space-between">
-            {/* <ColorModeSelect sx={{ position: 'fixed', top: '1rem', right: '1rem' }} /> */}
             <Card variant="outlined">
                 <SitemarkIcon />
                 <Typography
@@ -135,7 +125,7 @@ export function SignInPage() {
                     }}
                 >
                     <FormControl>
-                        <FormLabel htmlFor="email">Email</FormLabel>
+                        <FormLabel htmlFor="email" sx={{ marginBottom: "5px" }}>Email</FormLabel>
                         <TextField
                             error={emailError}
                             helperText={emailErrorMessage}
@@ -146,26 +136,25 @@ export function SignInPage() {
                             autoComplete="email"
                             autoFocus
                             required
+                            size='small'
                             fullWidth
                             variant="outlined"
                             color={emailError ? 'error' : 'primary'}
                         />
                     </FormControl>
                     <FormControl>
-                        <FormLabel htmlFor="password">Password</FormLabel>
+                        <FormLabel htmlFor="password" sx={{ marginBottom: "5px" }}>Password</FormLabel>
                         <TextField
-                            error={passwordError}
-                            helperText={passwordErrorMessage}
                             name="password"
                             placeholder="••••••"
                             type="password"
                             id="password"
                             autoComplete="current-password"
                             autoFocus
+                            size='small'
                             required
                             fullWidth
                             variant="outlined"
-                            color={passwordError ? 'error' : 'primary'}
                         />
                     </FormControl>
                     <FormControlLabel
@@ -175,6 +164,7 @@ export function SignInPage() {
                     <Button
                         type="submit"
                         fullWidth
+                        disabled={loading}
                         variant="contained"
                         onClick={validateInputs}
                     >
