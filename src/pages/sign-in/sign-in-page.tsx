@@ -78,7 +78,8 @@ export function SignInPage() {
         if (errors) {
             return notify(errors.at(-1)?.message)
         }
-        if (data) {
+        if (data) {            
+            localStorage.setItem('accessToken',data?.loginUser?.token)
             handleUserDetails(data?.loginUser)
             handleAuthenticate(true)
             navigate('/')

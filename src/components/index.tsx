@@ -1,2 +1,7 @@
 export * from './SnackbarProvider'
 export * from './notify'
+export * from './CustomModal'
+export * from './CustomTable'
+export * from './CustomInput'
+export * from './Pagination'
+export * from './CustomPagination'

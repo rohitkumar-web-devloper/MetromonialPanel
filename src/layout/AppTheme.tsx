@@ -18,15 +18,30 @@ export default function AppTheme({
     return disableCustomTheme
       ? {}
       : createTheme({
-          cssVariables: {
-            colorSchemeSelector: 'data-mui-color-scheme',
-            cssVarPrefix: 'template',
+        cssVariables: {
+          colorSchemeSelector: 'data-mui-color-scheme',
+          cssVarPrefix: 'template',
+        },
+        colorSchemes,
+        typography,
+        shadows,
+        shape,
+        components: {
+          ...themeComponents,
+          MuiButton: {
+            styleOverrides: {
+              root: {
+                textTransform: 'none', // Ensures button text does not transform to uppercase
+              },
+            },
           },
-          colorSchemes,
-          typography,
-          shadows,
-          shape,
-        });
+          MuiTextField: {
+            defaultProps: {
+              size: 'small', // Set the default size to small
+            },
+          },
+        },
+      });
   }, [disableCustomTheme, themeComponents]);
   if (disableCustomTheme) {
     return <React.Fragment>{children}</React.Fragment>;
