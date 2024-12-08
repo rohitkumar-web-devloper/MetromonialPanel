@@ -1,4 +1,3 @@
-import * as React from 'react';
 import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import Divider from '@mui/material/Divider';
@@ -6,9 +5,8 @@ import Drawer, { drawerClasses } from '@mui/material/Drawer';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
 import LogoutRoundedIcon from '@mui/icons-material/LogoutRounded';
-import NotificationsRoundedIcon from '@mui/icons-material/NotificationsRounded';
-import { MenuButton } from './MenuButton';
 import { MenuContent } from './MenuContent';
+import { useAuthValidator } from '@/store';
 
 interface SideMenuMobileProps {
     open: boolean | undefined;
@@ -16,6 +14,7 @@ interface SideMenuMobileProps {
 }
 
 export function SideMenuMobile({ open, toggleDrawer }: SideMenuMobileProps) {
+    const { user } = useAuthValidator((state) => state)
     return (
         <Drawer
             anchor="right"
@@ -31,28 +30,25 @@ export function SideMenuMobile({ open, toggleDrawer }: SideMenuMobileProps) {
         >
             <Stack
                 sx={{
-                    maxWidth: '70dvw',
+                    maxWidth: '100dvw',
                     height: '100%',
                 }}
             >
-                <Stack direction="row" sx={{ p: 2, pb: 0, gap: 1 }}>
+                <Stack direction="row" sx={{ p: 2, pb: 0, gap: 1 ,width:"250px"}}>
                     <Stack
                         direction="row"
                         sx={{ gap: 1, alignItems: 'center', flexGrow: 1, p: 1 }}
                     >
                         <Avatar
                             sizes="small"
-                            alt="Riley Carter"
+                            alt={user?.name}
                             src="/static/images/avatar/7.jpg"
                             sx={{ width: 24, height: 24 }}
                         />
                         <Typography component="p" variant="h6">
-                            Riley Carter
+                            {user?.name}
                         </Typography>
                     </Stack>
-                    <MenuButton showBadge>
-                        <NotificationsRoundedIcon />
-                    </MenuButton>
                 </Stack>
                 <Divider />
                 <Stack sx={{ flexGrow: 1 }}>

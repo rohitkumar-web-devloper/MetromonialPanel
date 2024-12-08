@@ -3,6 +3,8 @@ import { Box, FormControl, MenuItem, Select, Stack, Typography } from '@mui/mate
 import { Pagination } from './Pagination'
 
 export function CustomPagination({ page, page_size, total_records, setPage, totalPages, handlePageSize }) {
+    console.log(total_records);
+
     return (
         <Stack
             direction="row"
@@ -21,9 +23,9 @@ export function CustomPagination({ page, page_size, total_records, setPage, tota
                     sx={{ textAlign: { xs: "center", sm: "normal" } }}
                     color="primary"
                     variant="body1"
-                >{`Showing ${page !== 0 ? page * page_size : 1}  to ${(page + 1) * page_size > total_records
+                >{`Showing ${page !== 1 ? (page - 1) * page_size : 1}  to ${page * page_size > total_records
                     ? total_records
-                    : (page + 1) * page_size
+                    : page * page_size
                     } of ${total_records} entries`}</Typography>
             </Box>
             <Box sx={{ order: { xs: 2, sm: 0 } }} flex={{ xs: 0, sm: 1 }}>

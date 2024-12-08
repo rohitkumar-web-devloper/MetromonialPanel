@@ -48,10 +48,9 @@ const Pagination = ({ page, setPage, totalPages, setTabDataCheck }) => {
       <IconButton
         color="primary"
         sx={{ width: "35px", height: "35px" }}
-        disabled={page === 0}
+        disabled={page === 1}
         onClick={handleDecrement}
       >
-        {" "}
         <KeyboardArrowLeftOutlined />{" "}
       </IconButton>
       <Typography color="primary" variant="body2">
@@ -75,19 +74,19 @@ const Pagination = ({ page, setPage, totalPages, setTabDataCheck }) => {
           }}
           labelId="demo-simple-select-label"
           id="demo-simple-select"
-          value={page + 1}
+          value={page}
           onChange={handlePageChange}
           color="primary"
           renderValue={() => (
             <Typography color="primary" variant="body2">
-              {page + 1}
+              {page }
             </Typography>
           )}
         >
           {Array.from({ length: totalPages }, (_, index) => index + 1).map(
             (pageNumber) => (
               <MenuItem key={pageNumber} value={pageNumber}>
-                {pageNumber}{" "}
+                {pageNumber}
               </MenuItem>
             )
           )}
@@ -101,7 +100,7 @@ const Pagination = ({ page, setPage, totalPages, setTabDataCheck }) => {
       <IconButton
         color="primary"
         sx={{ width: "35px", height: "35px" }}
-        disabled={page + 1 === totalPages}
+        disabled={page === totalPages}
         onClick={handleIncrement}
       >
         {" "}

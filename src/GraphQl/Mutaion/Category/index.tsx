@@ -8,8 +8,6 @@ const CATEGORY_POST = gql`
     name
     createdByName
     updatedAt
-    message
-    success
     }
   }
 `;
@@ -21,8 +19,6 @@ const CATEGORY_PUT = gql`
     name
     createdByName
     updatedAt
-    message
-    success
     }
   }
 `;

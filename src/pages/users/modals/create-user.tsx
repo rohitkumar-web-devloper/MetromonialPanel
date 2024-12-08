@@ -1,46 +1,45 @@
 import { CustomInput, CustomModal, notify } from '@/components'
-import { CATEGORY_POST, CATEGORY_PUT } from '@/GraphQl/Mutaion/Category';
 import { ModalControl } from '@/types'
 import { useMutation } from '@apollo/client';
 import { Box, FormControl, FormControlLabel, FormLabel, Radio, RadioGroup, Stack, TextField } from '@mui/material'
 import Grid from '@mui/material/Grid2';
 import LoadingButton from '@mui/lab/LoadingButton';
 import { useFormik } from 'formik'
-import * as Yup from 'yup'; // Import Yup for validation
+import * as Yup from 'yup'; 
 import { useEffect, useState } from 'react';
 import Profile from '../../../assets/profile.png'
-interface CreateCategoryTypes extends ModalControl {
+import { USER_POST, USER_PUT } from '@/GraphQl';
+
+interface InputValues { name: string, status: string | boolean | null, id?: string | number, mobile: string | null, email: string, password?: string }
+interface CreateCategoryTypes extends ModalControl, InputValues {
     refetch: () => void
     editData: {
+        mobile: string | null;
+        email: string;
         name: string;
         status: string | boolean | null;
-        id: string | number | null | never
+        id: string | number | never
     }
 }
-interface InputValues { name: string, status: string | boolean | null, id?: string, mobile: string, email: string, password: string }
 export const CreateUsersModal = ({ open, close, refetch, editData }: CreateCategoryTypes) => {
     const [prevImage, setPrevImage] = useState('')
-    const [prevImageFile, setPrevImageFile] = useState('')
-    const [createCategories, { loading }] = useMutation(CATEGORY_POST)
-    const [updateCategories, { loading: isUpdateLoading }] = useMutation(CATEGORY_PUT)
-    const handleImageUpload = (event) => {
-
+    const [prevImageFile, setPrevImageFile] = useState<File | null | string>('')
+    const [createUser, { loading }] = useMutation(USER_POST)
+    const [updateUser, { loading: isUpdateLoading }] = useMutation(USER_PUT)
+    const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
         const files = event.target.files;
-
         if (files && files.length > 0) {
-            const file = files[0]; // Select the first file
+            const file = files[0];
             const reader = new FileReader();
             setPrevImageFile(file)
             reader.onload = (e) => {
-                const imageData = e.target.result; // Base64 string of the image
-                console.log('Image Data:', imageData); // You can log or use it as needed
-
-                setPrevImage(imageData);
+                if (e.target && e.target.result) {
+                    const imageData = e.target.result as string
+                    console.log('Image Data:', imageData);
+                    setPrevImage(imageData); 
+                }
             };
-
-            reader.readAsDataURL(file); // Read the file as a base64 encoded string
-        } else {
-            console.log('No file selected');
+            reader.readAsDataURL(file);
         }
 
     }
@@ -69,44 +68,48 @@ export const CreateUsersModal = ({ open, close, refetch, editData }: CreateCateg
                 .email('Invalid email format'),
             password: Yup.string()
                 .required('Password is required')
-                .min(8, 'Password must be at least 8 characters long')
-                .max(20, 'Password must be less than 20 characters')
-                .matches(/[A-Z]/, 'Password must contain at least one uppercase letter')
-                .matches(/[a-z]/, 'Password must contain at least one lowercase letter')
-                .matches(/\d/, 'Password must contain at least one number')
-                .matches(/[@$!%*?&#]/, 'Password must contain at least one special character (@, $, !, %, *, ?, &, #)'),
         }),
         onSubmit: async (value: InputValues) => {
-            let newValue: InputValues = { ...value, status: value.status == 'false' ? false : true }
-            if (!editData) {
-                const { errors } = await createCategories({ variables: newValue });
-                if (errors) {
-                    return notify(errors.at(-1)?.message)
+            try {
+                let newValue: InputValues = { ...value, status: value.status == 'false' ? false : true }
+                if (!editData) {
+                    delete newValue.id
+                    const { errors } = await createUser({ variables: newValue });
+                    if (errors) {
+                        return notify(errors.at(-1)?.message)
+                    }
+                } else {
+                    newValue = {
+                        ...newValue,
+                        id: +editData?.id
+                    }
+                    const { errors } = await updateUser({ variables: newValue });
+                    if (errors) {
+                        return notify(errors.at(-1)?.message)
+                    }
                 }
-            } else {
-                newValue = {
-                    ...newValue,
-                    id: +editData?.id
-                }
-                const { errors } = await updateCategories({ variables: newValue });
-                if (errors) {
-                    return notify(errors.at(-1)?.message)
-                }
+                refetch()
+                notify("Create Successfully", "success")
+                close()
+            } catch (err) {
+                console.log(err);
+                notify(err?.message, "error")
             }
-            refetch()
-            notify("Create Successfully", "success")
-            close()
 
         }
     })
-    // useEffect(() => {
-    //     if (editData) {
-    //         setValues({
-    //             name: editData?.name,
-    //             status: String(editData?.status)
-    //         })
-    //     }
-    // }, [editData])
+    useEffect(() => {
+        if (editData) {
+            setValues({
+                name: editData?.name,
+                status: String(editData?.status),
+                mobile: editData?.mobile,
+                email: editData?.email,
+                password: '',
+                id: editData?.id
+            })
+        }
+    }, [editData])
     return (
         <div>
             <CustomModal open={open} close={close} heading={editData ? "Update User" : 'Create User'} action={<LoadingButton loading={loading || isUpdateLoading} disabled={loading || isUpdateLoading} form="category" type="submit" variant='contained'>
