@@ -11,9 +11,9 @@ import { useUser } from "./hook";
 export const UsersPage = () => {
     const { open, handleCloseModal, handleOpenModal } = useModalControl()
     const [editData, setEditData] = useState()
-    const [search, setSearch] = useState('')
+    const [search, setSearch] = useState(undefined)
     const { page, page_size: pageSize, setTotalPages, setTotal_records, handlePageSize, total_records, setPage, totalPages } = usePagination()
-    const { data, loading, refetch } = useQuery(USERS_GET, { variables: { page, pageSize, filter: { } } })
+    const { data, loading, refetch } = useQuery(USERS_GET, { variables: { page, pageSize, filter: { search } } })
     const { columns, handleSearch } = useUser(setEditData, handleOpenModal, setSearch)
     useEffect(() => {
         if (data && data.users) {

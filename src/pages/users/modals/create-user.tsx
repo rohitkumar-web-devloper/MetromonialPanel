@@ -22,6 +22,8 @@ interface CreateCategoryTypes extends ModalControl, InputValues {
     }
 }
 export const CreateUsersModal = ({ open, close, refetch, editData }: CreateCategoryTypes) => {
+    console.log(editData);
+    
     const [prevImage, setPrevImage] = useState('')
     const [prevImageFile, setPrevImageFile] = useState<File | null | string>('')
     const [createUser, { loading }] = useMutation(USER_POST)
@@ -66,8 +68,8 @@ export const CreateUsersModal = ({ open, close, refetch, editData }: CreateCateg
             email: Yup.string()
                 .required('Email is required')
                 .email('Invalid email format'),
-            password: Yup.string()
-                .required('Password is required')
+            // password: Yup.string()
+            //     .required('Password is required')
         }),
         onSubmit: async (value: InputValues) => {
             try {

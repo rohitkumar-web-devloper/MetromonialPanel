@@ -6,6 +6,7 @@ export const USERS_GET = gql`
       id
       name
       email
+      mobile
       profile
       status
       createdAt

@@ -6,6 +6,7 @@ const USER_POST = gql`
     id
     name
     email
+    mobile
     password
     token
     createdAt
@@ -15,18 +16,16 @@ const USER_POST = gql`
   }
 `;
 const USER_PUT = gql`
-  mutation UpdateUser($name: String, $email: String, $password: String,$status:Boolean,$profile:FileUpload,$updateUserId:ID) {
-    updateUser(name: $name, status: $status,email:$email,password:$password,profile:$profile,updateUserId:$updateUserId) {
+  mutation UpdateUser($name: String, $email: String, $password: String,$status:Boolean,$id:ID!,$mobile:String) {
+    updateUser(name: $name, status: $status,email:$email,password:$password,id:$id,mobile:$mobile) {
     id
     name
     email
+    mobile
     password
     token
     createdAt
     updatedAt
-    message
-    success
-    profile
     }
   }
 `;

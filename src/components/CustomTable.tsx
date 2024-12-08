@@ -114,7 +114,10 @@ export function CustomTable({ columns = [], rows = [], loading }: CustomTableTyp
                       <TableCell
                         key={column?.id}
                         align={column?.align || "center"}
-                        style={{ padding: "15px 0px" }}
+                        style={{ padding: "15px 0px"
+
+                          
+                         }}
                       >
                         {column.renderCell
                           ? column.renderCell(row, index)
@@ -132,6 +135,7 @@ export function CustomTable({ columns = [], rows = [], loading }: CustomTableTyp
                     key={column.id}
                     align={"center"}
                     style={{ padding: "15px 10px" }}
+                    
                   >
                     <Skeleton />
                   </TableCell>
