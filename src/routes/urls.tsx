@@ -5,4 +5,5 @@ export enum urls {
     USERS = "/users",
     CUSTOMERS = "/customers",
     Packages = "/packages",
+    SLOTS = "/slots",
 }

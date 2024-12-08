@@ -195,7 +195,7 @@ export const CreateUsersModal = ({ open, close, refetch, editData }: CreateCateg
                         </Grid>
                         <Grid size={{ xs: 12, sm: 6 }}>
                             <FormControl>
-                                <FormLabel id="demo-row-radio-buttons-group-label">Gender</FormLabel>
+                                <FormLabel id="demo-row-radio-buttons-group-label">Status</FormLabel>
                                 <RadioGroup
                                     row
                                     onChange={handleChange}

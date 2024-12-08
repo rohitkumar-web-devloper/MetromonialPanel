@@ -10,12 +10,14 @@ import {  useNavigate } from 'react-router-dom';
 import InterpreterModeIcon from '@mui/icons-material/InterpreterMode';
 import CategoryIcon from '@mui/icons-material/Category';
 import ManageAccountsIcon from '@mui/icons-material/ManageAccounts';
+import EventAvailableIcon from '@mui/icons-material/EventAvailable';
 const mainListItems = [
     { text: 'Dasboard', icon: <HomeRoundedIcon />, path: '/' },
     { text: 'Customer list', icon: <InterpreterModeIcon />, path: "customers" },
     { text: 'Packages', icon: <AssignmentRoundedIcon />, path: "packages" },
     { text: 'Category', icon: <CategoryIcon />, path: "category" },
     { text: 'Users', icon: <ManageAccountsIcon />, path: "users" },
+    { text: 'Slots', icon: <EventAvailableIcon />, path: "slots" },
 ];
 
 export function MenuContent() {

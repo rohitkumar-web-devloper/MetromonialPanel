@@ -2,7 +2,7 @@ import { Outlet, Params, RouteObject } from "react-router-dom";
 import { AuthGuard, Main } from "@/layout";
 import { LoadingCallBack } from "@/features";
 import { urls } from "./urls";
-import { CategoryPage, CustomerPage, PackagesPage, SignInPage, UsersPage } from "@/pages";
+import { CategoryPage, CustomerPage, PackagesPage, SignInPage, SlotsPage, UsersPage } from "@/pages";
 
 export type CustomMatchesType = {
     id: string;
@@ -82,6 +82,13 @@ export const root = [
                 element: <PackagesPage />,
                 handle: {
                     crumb: () => ({ label: "Package List" }),
+                },
+            },
+            {
+                path: urls.SLOTS,
+                element: <SlotsPage />,
+                handle: {
+                    crumb: () => ({ label: "Slots List" }),
                 },
             },
         ]

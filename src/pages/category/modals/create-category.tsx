@@ -87,7 +87,7 @@ export const CreateCategory = ({ open, close, refetch, editData }: CreateCategor
                         </Grid>
                         <Grid size={{ xs: 12 }}>
                             <FormControl>
-                                <FormLabel id="demo-row-radio-buttons-group-label">Gender</FormLabel>
+                                <FormLabel id="demo-row-radio-buttons-group-label">Status</FormLabel>
                                 <RadioGroup
                                     row
                                     onChange={handleChange}
