@@ -6,7 +6,7 @@ import ListItemText from '@mui/material/ListItemText';
 import Stack from '@mui/material/Stack';
 import HomeRoundedIcon from '@mui/icons-material/HomeRounded';
 import AssignmentRoundedIcon from '@mui/icons-material/AssignmentRounded';
-import { useNavigate } from 'react-router-dom';
+import {  useNavigate } from 'react-router-dom';
 import InterpreterModeIcon from '@mui/icons-material/InterpreterMode';
 import CategoryIcon from '@mui/icons-material/Category';
 import ManageAccountsIcon from '@mui/icons-material/ManageAccounts';
@@ -24,8 +24,11 @@ export function MenuContent() {
         <Stack sx={{ flexGrow: 1, p: 1, justifyContent: 'space-between' }}>
             <List dense >
                 {mainListItems.map((item, index) => (
-                    <ListItem key={index} disablePadding sx={{ display: 'block', marginBottom: "4px" }} onClick={() => navigate(item.path)}>
-                        <ListItemButton selected={index === 0} sx={{ borderRadius: "6px" }}>
+                    <ListItem key={index} sx={{ display: 'block', marginBottom: "4px" }} onClick={() => {
+                        navigate(item.path);
+                        localStorage.setItem('current-path', item?.path)
+                    }}>
+                        <ListItemButton selected={localStorage.getItem('current-path') === item.path} sx={{ borderRadius: "6px" }}>
                             <ListItemIcon>{item.icon}</ListItemIcon>
                             <ListItemText primary={item.text} />
                         </ListItemButton>
