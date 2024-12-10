@@ -22,16 +22,20 @@ export const useSlots = (setEditData, handleOpenModal, setSearch) => {
         {
             id: "From Time",
             label: "From Time",
-            renderCell: (rowData: { email: string }) => {
-                return rowData?.email
+            renderCell: (rowData: { startTime: string }) => {
+                return dayjs(rowData?.startTime).format('hh:mm A')
             },
         },
         {
             id: "Till Time.",
             label: "Till Time.",
-            renderCell: (rowData: { mobile: string }) => {
-                return rowData?.mobile
+            renderCell: (rowData: { endTime: string }) => {
+                return dayjs(rowData?.endTime).format('hh:mm A')
             },
+        },
+        {
+            id: "createdByName",
+            label: "Created By.",
         },
         {
             id: "Status",
@@ -42,7 +46,7 @@ export const useSlots = (setEditData, handleOpenModal, setSearch) => {
         },
         {
             id: "Created",
-            label: "Created",
+            label: "Created At",
             width: 250,
             renderCell: (rowData: { createdAt: string }) => dayjs(rowData?.createdAt).format('DD/MM/YYYY hh:mm A'),
         },

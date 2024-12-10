@@ -14,12 +14,12 @@ export function useUser(setEditData, handleOpenModal, setSearch) {
         {
             id: "session",
             label: "Profile",
-            renderCell: (rowData: { name: string }) => {
+            renderCell: (rowData: { name: string,profile:string }) => {
                 return <Box sx={{ display: "flex", justifyContent: "center" }}>
                     <Avatar
                         sizes="small"
                         alt={rowData?.name}
-                        src="/static/images/avatar/7.jpg"
+                        src={rowData?.profile}
                         sx={{ width: 36, height: 36 }}
                     />
                 </Box>

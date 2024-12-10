@@ -1,11 +1,13 @@
 import { CustomInput, CustomModal, notify } from '@/components'
 import { PACAKGE_POST, PACAKGE_PUT } from '@/GraphQl/Mutaion/Packages'
+import { SLOT_GET } from '@/GraphQl/Quaries/Slots'
 import { ModalControl } from '@/types'
-import { useMutation } from '@apollo/client'
+import { useMutation, useQuery } from '@apollo/client'
 import { LoadingButton } from '@mui/lab'
-import { Box, FormControl, FormControlLabel, FormLabel, Grid2, MenuItem, Radio, RadioGroup, TextField } from '@mui/material'
+import { Box, Checkbox, FormControl, FormControlLabel, FormLabel, Grid2, MenuItem, Radio, RadioGroup, TextField } from '@mui/material'
+import dayjs from 'dayjs'
 import { useFormik } from 'formik'
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import * as Yup from 'yup';
 const validationSchema = Yup.object({
     name: Yup.string()
@@ -28,6 +30,7 @@ const validationSchema = Yup.object({
 });
 
 export const CreatePackage = ({ open, close, editData, refetch }: ModalControl) => {
+    const [selectSlots, setSelectSlots] = useState([])
     const [createPlan, { loading }] = useMutation(PACAKGE_POST)
     const [updatePlan, { loading: isUpdateLoading }] = useMutation(PACAKGE_PUT)
     const { values, handleBlur, handleChange, handleSubmit, setValues, touched, errors } = useFormik({
@@ -43,7 +46,7 @@ export const CreatePackage = ({ open, close, editData, refetch }: ModalControl) 
         },
         validationSchema,
         onSubmit: async (value) => {
-            let newValue = { ...value, status: value.status == 'false' ? false : true }
+            let newValue = { ...value, status: value.status == 'false' ? false : true, timeSlots: JSON.stringify(selectSlots) }
             if (!editData) {
                 delete newValue.id
                 const { errors } = await createPlan({ variables: newValue });
@@ -76,10 +79,32 @@ export const CreatePackage = ({ open, close, editData, refetch }: ModalControl) 
                 timeSlots: "[]",
                 type: editData?.type,
             })
+            setSelectSlots(JSON.parse(editData?.timeSlots))
         }
     }, [editData])
+    const { data } = useQuery(SLOT_GET)
+
+    const handleStoreData = (checked, data) => {
+        setSelectSlots((prev) => {
+            let update = [...prev]
+            if (!checked) {
+                update = update.filter((it) => it.id != data?.id)
+            } else {
+                update = [...update, {
+                    name: data?.name,
+                    startTime: data?.startTime,
+                    endTime: data?.endTime,
+                    id: data?.id
+                }]
+
+            }
+            return update
+        })
+
+    }
+
     return (
-        <CustomModal open={open} close={close} heading={editData ? "Update Package" : 'Create Package'} action={<LoadingButton loading={loading || isUpdateLoading} disabled={loading || isUpdateLoading}  form="package" type="submit" variant='contained'>
+        <CustomModal open={open} close={close} heading={editData ? "Update Package" : 'Create Package'} action={<LoadingButton loading={loading || isUpdateLoading} disabled={loading || isUpdateLoading} form="package" type="submit" variant='contained'>
             {editData ? "Update" : "Create"}
         </LoadingButton>}>
             <Box component='form' onSubmit={handleSubmit} id="package">
@@ -172,6 +197,26 @@ export const CreatePackage = ({ open, close, editData, refetch }: ModalControl) 
                                     <MenuItem value="normal">Normal</MenuItem>
                                     <MenuItem value="premium">Premium</MenuItem>
                                 </TextField>
+
+                            }
+                        />
+                    </Grid2>
+                    <Grid2 size={{ xs: 12, md: 12 }}>
+                        <CustomInput label="Choose Slots"
+                            input={
+                                <Grid2 container spacing={1}>
+                                    {
+                                        data?.timeSlots?.timeSlot?.map((it) => {
+                                            return (
+                                                <Grid2 size={{ xs: 6, md: 6, lg: 6 }} key={it?.id}>
+                                                    <FormControlLabel control={<Checkbox checked={selectSlots?.map((item) => item?.id).includes(it?.id)} onChange={(e) => handleStoreData(e.target.checked, it)} />} label={`${dayjs(it?.startTime).format('hh:mm A')}-${dayjs(it?.endTime).format('hh:mm A')}`} />
+                                                </Grid2>
+                                            )
+                                        })
+                                    }
+
+
+                                </Grid2>
 
                             }
                         />

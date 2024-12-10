@@ -5,15 +5,16 @@ import { Box, FormControl, FormControlLabel, FormLabel, Radio, RadioGroup, Stack
 import Grid from '@mui/material/Grid2';
 import LoadingButton from '@mui/lab/LoadingButton';
 import { useFormik } from 'formik'
-import * as Yup from 'yup'; 
+import * as Yup from 'yup';
 import { useEffect, useState } from 'react';
 import Profile from '../../../assets/profile.png'
 import { USER_POST, USER_PUT } from '@/GraphQl';
 
-interface InputValues { name: string, status: string | boolean | null, id?: string | number, mobile: string | null, email: string, password?: string }
+interface InputValues { name: string, status: string | boolean | null, id?: string | number, mobile: string | null, email: string, password?: string, profile: string }
 interface CreateCategoryTypes extends ModalControl, InputValues {
     refetch: () => void
     editData: {
+        profile?: string;
         mobile: string | null;
         email: string;
         name: string;
@@ -22,8 +23,6 @@ interface CreateCategoryTypes extends ModalControl, InputValues {
     }
 }
 export const CreateUsersModal = ({ open, close, refetch, editData }: CreateCategoryTypes) => {
-    console.log(editData);
-    
     const [prevImage, setPrevImage] = useState('')
     const [prevImageFile, setPrevImageFile] = useState<File | null | string>('')
     const [createUser, { loading }] = useMutation(USER_POST)
@@ -38,7 +37,7 @@ export const CreateUsersModal = ({ open, close, refetch, editData }: CreateCateg
                 if (e.target && e.target.result) {
                     const imageData = e.target.result as string
                     console.log('Image Data:', imageData);
-                    setPrevImage(imageData); 
+                    setPrevImage(imageData);
                 }
             };
             reader.readAsDataURL(file);
@@ -53,6 +52,7 @@ export const CreateUsersModal = ({ open, close, refetch, editData }: CreateCateg
             email: "",
             password: "",
             id: "",
+            profile: ""
         },
         validationSchema: Yup.object({
             name: Yup.string()
@@ -68,15 +68,20 @@ export const CreateUsersModal = ({ open, close, refetch, editData }: CreateCateg
             email: Yup.string()
                 .required('Email is required')
                 .email('Invalid email format'),
-            // password: Yup.string()
-            //     .required('Password is required')
         }),
         onSubmit: async (value: InputValues) => {
             try {
                 let newValue: InputValues = { ...value, status: value.status == 'false' ? false : true }
                 if (!editData) {
+
                     delete newValue.id
-                    const { errors } = await createUser({ variables: newValue });
+
+                    const { errors } = await createUser({
+                        variables: {
+                            ...newValue,
+                            profile: prevImageFile
+                        }
+                    });
                     if (errors) {
                         return notify(errors.at(-1)?.message)
                     }
@@ -85,7 +90,10 @@ export const CreateUsersModal = ({ open, close, refetch, editData }: CreateCateg
                         ...newValue,
                         id: +editData?.id
                     }
-                    const { errors } = await updateUser({ variables: newValue });
+                    const { errors } = await updateUser({ variables: {
+                        ...newValue,
+                        profile: prevImageFile
+                    } });
                     if (errors) {
                         return notify(errors.at(-1)?.message)
                     }
@@ -108,8 +116,9 @@ export const CreateUsersModal = ({ open, close, refetch, editData }: CreateCateg
                 mobile: editData?.mobile,
                 email: editData?.email,
                 password: '',
-                id: editData?.id
+                id: editData?.id,
             })
+            setPrevImage(editData?.profile)
         }
     }, [editData])
     return (
