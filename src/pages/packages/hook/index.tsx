@@ -15,12 +15,12 @@ export function usePackage(setEditData, handleOpenModal, setSearch) {
         {
             id: "session",
             label: "Image",
-            renderCell: (rowData: { name: string }) => {
+            renderCell: (rowData: { name: string, image: string }) => {
                 return <Box sx={{ display: "flex", justifyContent: "center" }}>
                     <Avatar
                         sizes="small"
                         alt={rowData?.name}
-                        src="/static/images/avatar/7.jpg"
+                        src={rowData?.image}
                         sx={{ width: 36, height: 36 }}
                     />
                 </Box>
@@ -65,7 +65,7 @@ export function usePackage(setEditData, handleOpenModal, setSearch) {
             id: "Slots",
             label: "Slots",
             renderCell: (rowData: { timeSlots: string }) => {
-                
+
                 return rowData?.timeSlots ? JSON.parse(rowData?.timeSlots).length : 0
             },
         },

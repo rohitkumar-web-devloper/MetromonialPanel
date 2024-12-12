@@ -4,11 +4,12 @@ import { SLOT_GET } from '@/GraphQl/Quaries/Slots'
 import { ModalControl } from '@/types'
 import { useMutation, useQuery } from '@apollo/client'
 import { LoadingButton } from '@mui/lab'
-import { Box, Checkbox, FormControl, FormControlLabel, FormLabel, Grid2, MenuItem, Radio, RadioGroup, TextField } from '@mui/material'
+import { Box, Checkbox, FormControl, FormControlLabel, FormLabel, Grid2, MenuItem, Radio, RadioGroup, Stack, TextField } from '@mui/material'
 import dayjs from 'dayjs'
 import { useFormik } from 'formik'
 import { useEffect, useState } from 'react'
 import * as Yup from 'yup';
+import Profile from '../../../assets/profile.png'
 const validationSchema = Yup.object({
     name: Yup.string()
         .required("Name is required")
@@ -30,6 +31,8 @@ const validationSchema = Yup.object({
 });
 
 export const CreatePackage = ({ open, close, editData, refetch }: ModalControl) => {
+    const [prevImage, setPrevImage] = useState('')
+    const [prevImageFile, setPrevImageFile] = useState<File | null | string>('')
     const [selectSlots, setSelectSlots] = useState([])
     const [createPlan, { loading }] = useMutation(PACAKGE_POST)
     const [updatePlan, { loading: isUpdateLoading }] = useMutation(PACAKGE_PUT)
@@ -49,12 +52,12 @@ export const CreatePackage = ({ open, close, editData, refetch }: ModalControl) 
             let newValue = { ...value, status: value.status == 'false' ? false : true, timeSlots: JSON.stringify(selectSlots) }
             if (!editData) {
                 delete newValue.id
-                const { errors } = await createPlan({ variables: newValue });
+                const { errors } = await createPlan({ variables: { ...newValue, image: prevImageFile } });
                 if (errors) {
                     return notify(errors.at(-1)?.message)
                 }
             } else {
-                const { errors } = await updatePlan({ variables: newValue });
+                const { errors } = await updatePlan({ variables: { ...newValue, image: prevImageFile } });
                 if (errors) {
                     return notify(errors.at(-1)?.message)
                 }
@@ -80,6 +83,7 @@ export const CreatePackage = ({ open, close, editData, refetch }: ModalControl) 
                 type: editData?.type,
             })
             setSelectSlots(JSON.parse(editData?.timeSlots))
+            setPrevImage(editData?.image)
         }
     }, [editData])
     const { data } = useQuery(SLOT_GET)
@@ -102,48 +106,80 @@ export const CreatePackage = ({ open, close, editData, refetch }: ModalControl) 
         })
 
     }
+    const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+        const files = event.target.files;
+        if (files && files.length > 0) {
+            const file = files[0];
+            const reader = new FileReader();
+            setPrevImageFile(file)
+            reader.onload = (e) => {
+                if (e.target && e.target.result) {
+                    const imageData = e.target.result as string
+                    console.log('Image Data:', imageData);
+                    setPrevImage(imageData);
+                }
+            };
+            reader.readAsDataURL(file);
+        }
 
+    }
     return (
         <CustomModal open={open} close={close} heading={editData ? "Update Package" : 'Create Package'} action={<LoadingButton loading={loading || isUpdateLoading} disabled={loading || isUpdateLoading} form="package" type="submit" variant='contained'>
             {editData ? "Update" : "Create"}
         </LoadingButton>}>
             <Box component='form' onSubmit={handleSubmit} id="package">
                 <Grid2 container spacing={2}>
-                    <Grid2 size={{ xs: 12, md: 6 }}>
-                        <CustomInput label="Name"
-                            input={
-                                <TextField
-                                    fullWidth
-                                    placeholder='Enter Catergory Name.'
-                                    value={values?.name}
-                                    onChange={handleChange}
-                                    onBlur={handleBlur}
-                                    name="name"
-                                    error={Boolean(touched.name && errors.name)}
-                                    helperText={touched.name && errors.name}
-                                />
+                    <Grid2 size={{ xs: 6 }} >
+                        <Box sx={{ border: "1px dotted lightGrey", padding: "10px", borderRadius: "8px", display: "flex", justifyContent: "center" }}>
+                            <Box sx={{ width: "150px", height: "150px", position: "relative" }}>
+                                {
+                                    prevImage ?
+                                        <img src={prevImage} style={{ width: "100%", height: "100%" }} />
+                                        :
+                                        <img src={Profile} style={{ width: "100%", height: "100%" }} />
 
-                            }
-                        />
+                                }
+                                <input type='file' onChange={handleImageUpload} style={{ position: "absolute", top: "0px", left: "0", width: "150px", height: "150px", opacity: "0" }} />
+                            </Box>
+                        </Box>
+                    </Grid2>
+                    <Grid2 size={{ xs: 12, md: 6 }} >
+                        <Stack spacing={2}>
+                            <CustomInput label="Name"
+                                input={
+                                    <TextField
+                                        fullWidth
+                                        placeholder='Enter Catergory Name.'
+                                        value={values?.name}
+                                        onChange={handleChange}
+                                        onBlur={handleBlur}
+                                        name="name"
+                                        error={Boolean(touched.name && errors.name)}
+                                        helperText={touched.name && errors.name}
+                                    />
+
+                                }
+                            />
+
+                            <CustomInput label="Description"
+                                input={
+                                    <TextField
+                                        fullWidth
+                                        placeholder='Enter Description.'
+                                        value={values?.description}
+                                        onChange={handleChange}
+                                        onBlur={handleBlur}
+                                        name="description"
+                                        error={Boolean(touched.description && errors.description)}
+                                        helperText={touched.description && errors.description}
+                                    />
+
+                                }
+                            />
+                        </Stack>
 
                     </Grid2>
-                    <Grid2 size={{ xs: 12, md: 6 }}>
-                        <CustomInput label="Description"
-                            input={
-                                <TextField
-                                    fullWidth
-                                    placeholder='Enter Description.'
-                                    value={values?.description}
-                                    onChange={handleChange}
-                                    onBlur={handleBlur}
-                                    name="description"
-                                    error={Boolean(touched.description && errors.description)}
-                                    helperText={touched.description && errors.description}
-                                />
-
-                            }
-                        />
-                    </Grid2>
+                
                     <Grid2 size={{ xs: 12, md: 6 }}>
                         <CustomInput label="Price"
                             input={

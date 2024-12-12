@@ -1,7 +1,7 @@
 import { gql } from "@apollo/client";
 
 const PACAKGE_POST = gql`
-  mutation createPlan($name: String, $image: FileUpload = null, $description: String, $price: Int, $credits: Int, $timeSlots: String, $type: String, $status: Boolean) {
+  mutation createPlan($name: String, $image: Upload = null, $description: String, $price: Int, $credits: Int, $timeSlots: String, $type: String, $status: Boolean) {
     createPlan(name: $name, image: $image, description: $description, price: $price, credits: $credits, timeSlots: $timeSlots, type: $type, status: $status) {
     id
     name
@@ -18,8 +18,8 @@ const PACAKGE_POST = gql`
   }
 `;
 const PACAKGE_PUT = gql`
-  mutation createPlan($id: ID!,$name: String,  $description: String, $price: Int, $credits: Int, $timeSlots: String, $type: String, $status: Boolean) {
-    updatePlan(id:$id, name: $name, description: $description, price: $price, credits: $credits, timeSlots: $timeSlots, type: $type, status: $status) {
+  mutation updatePlan($id: ID!,$name: String,  $description: String, $price: Int, $credits: Int, $timeSlots: String, $type: String, $status: Boolean, $image: Upload = null) {
+    updatePlan(id:$id, name: $name, description: $description, price: $price, credits: $credits, timeSlots: $timeSlots, type: $type, status: $status, image:$image) {
     id
     name
     image

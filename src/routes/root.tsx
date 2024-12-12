@@ -2,7 +2,7 @@ import { Outlet, Params, RouteObject } from "react-router-dom";
 import { AuthGuard, Main } from "@/layout";
 import { LoadingCallBack } from "@/features";
 import { urls } from "./urls";
-import { CategoryPage, CustomerPage, PackagesPage, SignInPage, SlotsPage, UsersPage } from "@/pages";
+import { CategoryPage, CustomerPage, DashboardPage, PackagesPage, SignInPage, SlotsPage, UsersPage } from "@/pages";
 
 export type CustomMatchesType = {
     id: string;
@@ -54,7 +54,7 @@ export const root = [
         children: [
             {
                 index: true,
-                element: <>Home page</>,
+                element: <DashboardPage />,
             },
             {
                 path: urls.CATERGORY,

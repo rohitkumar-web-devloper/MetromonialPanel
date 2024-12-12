@@ -10,12 +10,21 @@ import ListItemIcon, { listItemIconClasses } from '@mui/material/ListItemIcon';
 import LogoutRoundedIcon from '@mui/icons-material/LogoutRounded';
 import MoreVertRoundedIcon from '@mui/icons-material/MoreVertRounded';
 import { MenuButton } from './MenuButton';
-
+import { useModalControl } from '@/hooks';
+import { CustomModal, notify } from '@/components';
+import { Button, Typography } from '@mui/material';
+import { useMutation } from '@apollo/client';
+import { LOGOUT_POST } from '@/GraphQl';
+import { LoadingButton } from '@mui/lab';
+import { useNavigate } from 'react-router-dom';
+import { useAuthValidator } from '@/store';
 const MenuItem = styled(MuiMenuItem)({
     margin: '2px 0',
 });
 
 export function OptionsMenu() {
+    const { handleAuthenticate } = useAuthValidator((state: { isAuthenticate: boolean, handleAuthenticate: (value: boolean) => void, handleUserDetails: (value: { [key: string]: string }) => void }) => state)
+    const navigate = useNavigate()
     const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
     const open = Boolean(anchorEl);
     const handleClick = (event: React.MouseEvent<HTMLElement>) => {
@@ -24,6 +33,17 @@ export function OptionsMenu() {
     const handleClose = () => {
         setAnchorEl(null);
     };
+    const { open: isOpen, handleCloseModal, handleOpenModal } = useModalControl()
+    const [logoutUser, { loading }] = useMutation(LOGOUT_POST)
+    const handleConfirm = async () => {
+        const { errors } = await logoutUser();
+        if (errors) {
+            return notify(errors.at(-1)?.message)
+        }
+        handleCloseModal()
+        navigate('/login')
+        handleAuthenticate(false)
+    }
     return (
         <React.Fragment>
             <MenuButton
@@ -55,7 +75,8 @@ export function OptionsMenu() {
             >
 
                 <MenuItem
-                    onClick={handleClose}
+                    // onClick={handleClose}
+                    onClick={() => { handleOpenModal(); handleClose() }}
                     sx={{
                         [`& .${listItemIconClasses.root}`]: {
                             ml: 'auto',
@@ -66,12 +87,17 @@ export function OptionsMenu() {
                         gap: "10px"
                     }}
                 >
-                    <ListItemText>Logout</ListItemText>
+                    <ListItemText >Logout</ListItemText>
                     <ListItemIcon>
                         <LogoutRoundedIcon fontSize="small" />
                     </ListItemIcon>
                 </MenuItem>
             </Menu>
+            {isOpen && <CustomModal open={isOpen} close={handleCloseModal} heading='Logout' size='xs' action={
+                <LoadingButton loading={loading} onClick={handleConfirm} disabled={loading} variant="contained" color='error'>Confirm</LoadingButton>
+            } >
+                <Typography>Are you sure you want to log out?</Typography>
+            </CustomModal>}
         </React.Fragment>
     );
 }

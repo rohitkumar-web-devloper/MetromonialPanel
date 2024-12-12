@@ -57,8 +57,8 @@ export function CustomModal({ children, open, close, heading, action, size, icon
                 <DialogContent dividers={true}>
                     {children}
                 </DialogContent>
-                <DialogActions sx={{ display: "flex", flexDirection: "column", padding: "15px 20px", justifyContent: "flex-end" }}>
-                    <Box sx={{ display: "flex", justifyContent: "space-between", padding: "0px 0px 15px 5px", width: "100%" }}>
+                <DialogActions sx={{ display: "flex", flexDirection: "column", padding: "10px 20px", justifyContent: "flex-end" }}>
+                    <Box sx={{ display: "flex", justifyContent: "space-between", padding: "0px 0px 5px 5px", width: "100%" }}>
                         <Button type='button' variant='outlined' onClick={close}>{canceltext || 'Cancel'}</Button>
                         {action}
                     </Box>
