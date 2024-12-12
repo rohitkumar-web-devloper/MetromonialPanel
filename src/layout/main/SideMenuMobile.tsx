@@ -7,6 +7,13 @@ import Typography from '@mui/material/Typography';
 import LogoutRoundedIcon from '@mui/icons-material/LogoutRounded';
 import { MenuContent } from './MenuContent';
 import { useAuthValidator } from '@/store';
+import { CustomModal, notify } from '@/components';
+import { LoadingButton } from '@mui/lab';
+import { useModalControl } from '@/hooks';
+import { useNavigate } from 'react-router-dom';
+import { useMutation } from '@apollo/client';
+import { LOGOUT_POST } from '@/GraphQl';
+import { CreateUsersModal } from '@/pages/users/modals';
 
 interface SideMenuMobileProps {
     open: boolean | undefined;
@@ -14,7 +21,20 @@ interface SideMenuMobileProps {
 }
 
 export function SideMenuMobile({ open, toggleDrawer }: SideMenuMobileProps) {
-    const { user } = useAuthValidator((state) => state)
+    const navigate = useNavigate()
+    const { handleAuthenticate, user } = useAuthValidator((state: { isAuthenticate: boolean, handleAuthenticate: (value: boolean) => void, handleUserDetails: (value: { [key: string]: string }) => void }) => state)
+    const { open: isOpen, handleCloseModal, handleOpenModal } = useModalControl()
+    const { open: isOpenProfile, handleCloseModal: handleCloseProfileModal, handleOpenModal: handleOpenProfileModal } = useModalControl()
+    const [logoutUser, { loading }] = useMutation(LOGOUT_POST)
+    const handleConfirm = async () => {
+        const { errors } = await logoutUser();
+        if (errors) {
+            return notify(errors.at(-1)?.message)
+        }
+        handleCloseModal()
+        navigate('/login')
+        handleAuthenticate(false)
+    }
     return (
         <Drawer
             anchor="right"
@@ -34,15 +54,16 @@ export function SideMenuMobile({ open, toggleDrawer }: SideMenuMobileProps) {
                     height: '100%',
                 }}
             >
-                <Stack direction="row" sx={{ p: 2, pb: 0, gap: 1 ,width:"250px"}}>
+                <Stack direction="row" sx={{ p: 2, pb: 0, gap: 1, width: "250px" }}>
                     <Stack
                         direction="row"
-                        sx={{ gap: 1, alignItems: 'center', flexGrow: 1, p: 1 }}
+                        sx={{ gap: 1, alignItems: 'center', flexGrow: 1, p: 1 ,cursor:"pointer"}}
+                        onClick={handleOpenProfileModal}
                     >
                         <Avatar
                             sizes="small"
                             alt={user?.name}
-                            src="/static/images/avatar/7.jpg"
+                            src={user.profile}
                             sx={{ width: 24, height: 24 }}
                         />
                         <Typography component="p" variant="h6">
@@ -56,11 +77,19 @@ export function SideMenuMobile({ open, toggleDrawer }: SideMenuMobileProps) {
                     <Divider />
                 </Stack>
                 <Stack sx={{ p: 2 }}>
-                    <Button variant="outlined" fullWidth startIcon={<LogoutRoundedIcon />}>
+                    <Button variant="outlined" fullWidth startIcon={<LogoutRoundedIcon />}
+                        onClick={() => { handleOpenModal(); }}
+                    >
                         Logout
                     </Button>
                 </Stack>
             </Stack>
+            {isOpen && <CustomModal open={isOpen} close={handleCloseModal} heading='Logout' size='xs' action={
+                <LoadingButton loading={loading} onClick={handleConfirm} disabled={loading} variant="contained" color='error'>Confirm</LoadingButton>
+            } >
+                <Typography>Are you sure you want to log out?</Typography>
+            </CustomModal>}
+            {isOpenProfile && <CreateUsersModal open={isOpenProfile} close={() => { handleCloseProfileModal(); }} editData={user} isProfile={true} />}
         </Drawer>
     );
 }

@@ -6,6 +6,9 @@ const USER_LOGIN_POST = gql`
       id
       name
       email
+      mobile
+      profile
+      status
       token
     }
   }

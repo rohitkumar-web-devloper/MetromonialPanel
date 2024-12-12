@@ -22,10 +22,9 @@ const USER_PUT = gql`
     name
     email
     mobile
+    status
+    profile
     password
-    token
-    createdAt
-    updatedAt
     }
   }
 `;

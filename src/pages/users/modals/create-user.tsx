@@ -9,10 +9,12 @@ import * as Yup from 'yup';
 import { useEffect, useState } from 'react';
 import Profile from '../../../assets/profile.png'
 import { USER_POST, USER_PUT } from '@/GraphQl';
+import { useAuthValidator } from '@/store';
 
 interface InputValues { name: string, status: string | boolean | null, id?: string | number, mobile: string | null, email: string, password?: string, profile: string }
 interface CreateCategoryTypes extends ModalControl, InputValues {
     refetch: () => void
+    isProfile: boolean;
     editData: {
         profile?: string;
         mobile: string | null;
@@ -22,7 +24,8 @@ interface CreateCategoryTypes extends ModalControl, InputValues {
         id: string | number | never
     }
 }
-export const CreateUsersModal = ({ open, close, refetch, editData }: CreateCategoryTypes) => {
+export const CreateUsersModal = ({ open, close, refetch, editData, isProfile }: CreateCategoryTypes) => {
+    const { handleUserDetails } = useAuthValidator((state: { isAuthenticate: boolean, handleAuthenticate: (value: boolean) => void, handleUserDetails: (value: { [key: string]: string }) => void }) => state)
     const [prevImage, setPrevImage] = useState('')
     const [prevImageFile, setPrevImageFile] = useState<File | null | string>('')
     const [createUser, { loading }] = useMutation(USER_POST)
@@ -36,7 +39,6 @@ export const CreateUsersModal = ({ open, close, refetch, editData }: CreateCateg
             reader.onload = (e) => {
                 if (e.target && e.target.result) {
                     const imageData = e.target.result as string
-                    console.log('Image Data:', imageData);
                     setPrevImage(imageData);
                 }
             };
@@ -85,21 +87,30 @@ export const CreateUsersModal = ({ open, close, refetch, editData }: CreateCateg
                     if (errors) {
                         return notify(errors.at(-1)?.message)
                     }
+                    notify("Update Successfully", "success")
                 } else {
                     newValue = {
                         ...newValue,
                         id: +editData?.id
                     }
-                    const { errors } = await updateUser({ variables: {
-                        ...newValue,
-                        profile: prevImageFile
-                    } });
+                    const { data, errors } = await updateUser({
+                        variables: {
+                            ...newValue,
+                            profile: prevImageFile
+                        }
+                    });
                     if (errors) {
                         return notify(errors.at(-1)?.message)
                     }
+                    if (isProfile) {
+                        handleUserDetails(data?.updateUser)
+                    }
+
+                    notify("Create Successfully", "success")
                 }
-                refetch()
-                notify("Create Successfully", "success")
+                if (refetch) {
+                    refetch()
+                }
                 close()
             } catch (err) {
                 console.log(err);

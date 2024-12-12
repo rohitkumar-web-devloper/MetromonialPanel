@@ -9,6 +9,8 @@ import { SelectContent } from './SelectContent';
 import { MenuContent } from './MenuContent';
 import { OptionsMenu } from './OptionsMenu';
 import { useAuthValidator } from '@/store';
+import { CreateUsersModal } from '@/pages/users/modals';
+import { useModalControl } from '@/hooks';
 
 const drawerWidth = 240;
 
@@ -25,7 +27,7 @@ const Drawer = styled(MuiDrawer)({
 
 export default function SideMenu() {
     const { user } = useAuthValidator((state) => state)
-
+    const { open: isOpen, handleCloseModal, handleOpenModal } = useModalControl()
     return (
         <Drawer
             variant="permanent"
@@ -60,10 +62,10 @@ export default function SideMenu() {
                 <Avatar
                     sizes="small"
                     alt={user?.name}
-                    src="/static/images/avatar/7.jpg"
+                    src={user?.profile}
                     sx={{ width: 36, height: 36 }}
                 />
-                <Box sx={{ mr: 'auto' }}>
+                <Box sx={{ mr: 'auto', cursor: "pointer" }} onClick={handleOpenModal}>
                     <Typography variant="body2" sx={{ fontWeight: 500, lineHeight: '16px' }}>
                         {user?.name}
                     </Typography>
@@ -73,6 +75,7 @@ export default function SideMenu() {
                 </Box>
                 <OptionsMenu />
             </Stack>
+            {isOpen && <CreateUsersModal open={isOpen} close={() => { handleCloseModal(); }} editData={user} isProfile={true} />}
         </Drawer>
     );
 }
