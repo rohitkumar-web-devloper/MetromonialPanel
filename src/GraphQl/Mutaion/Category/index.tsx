@@ -1,8 +1,8 @@
 import { gql } from '@apollo/client';
 
 const CATEGORY_POST = gql`
-  mutation createCategories($name: String!, $status: Boolean!) {
-    createCategories(name: $name, status: $status) {
+  mutation createCategories($name: String!, $status: Boolean!,$image:Upload,$description:String) {
+    createCategories(name: $name, status: $status,image:$image,description:$description ) {
     createdAt
     id
     name
@@ -12,8 +12,8 @@ const CATEGORY_POST = gql`
   }
 `;
 const CATEGORY_PUT = gql`
-  mutation updateCategories($name: String!, $status: Boolean!,$id: ID!) {
-    updateCategories(name: $name, status: $status, id: $id) {
+  mutation updateCategories($name: String!, $status: Boolean!,$id: ID!,$image:Upload,$description:String) {
+    updateCategories(name: $name, status: $status, id: $id,image:$image,description:$description) {
     createdAt
     id
     name

@@ -4,17 +4,19 @@ export const Categorys = gql`
   query GetCategories($page: Int, $pageSize: Int, $filter: CategoryFilter) {
     categories(page: $page, pageSize: $pageSize, filter: $filter) {
       categories {
-      id
-      name
-      status
+      createdAt
       createdById
       createdByName
-      createdAt
+      description
+      id
+      image
+      name
+      status
       updatedAt
     }
-    totalCount
     page
     pageSize
+    totalCount
     totalPages
     }
   }

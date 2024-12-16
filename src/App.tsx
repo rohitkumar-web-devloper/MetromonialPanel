@@ -11,14 +11,9 @@ import createUploadLink from 'apollo-upload-client/createUploadLink.mjs';
 import { LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
 function App() {
-  // const httpLink = new HttpLink({
-  //   uri: 'http://localhost:7575/graphql',
-  // });
   const uploadLink = createUploadLink({
     uri: 'http://localhost:7575/graphql', // Update with your GraphQL endpoint
-    // headers: {
-    //   "Apollo-Require-Preflight": "true",
-    // },
+
   });
   const authLink = setContext((_, { headers }) => {
     return {

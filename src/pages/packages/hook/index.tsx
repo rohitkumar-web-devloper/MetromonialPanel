@@ -14,7 +14,7 @@ export function usePackage(setEditData, handleOpenModal, setSearch) {
         },
         {
             id: "session",
-            label: "Image",
+            label: "Profile",
             renderCell: (rowData: { name: string, image: string }) => {
                 return <Box sx={{ display: "flex", justifyContent: "center" }}>
                     <Avatar

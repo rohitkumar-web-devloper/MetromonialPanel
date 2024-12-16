@@ -1,8 +1,8 @@
-import { Chip, IconButton } from '@mui/material';
+import { Avatar, Box, Chip, IconButton } from '@mui/material';
 import dayjs from 'dayjs';
 import EditIcon from '@mui/icons-material/Edit';
 import { debounce } from 'lodash'
-export function useCategoryColumn(setEditData, handleOpenModal,setSearch) {
+export function useCategoryColumn(setEditData, handleOpenModal, setSearch) {
     const columns = [
         {
             id: "SI No",
@@ -13,13 +13,27 @@ export function useCategoryColumn(setEditData, handleOpenModal,setSearch) {
         },
         {
             id: "session",
+            label: "Profile",
+            renderCell: (rowData: { name: string, image: string }) => {
+                return <Box sx={{ display: "flex", justifyContent: "center" }}>
+                    <Avatar
+                        sizes="small"
+                        alt={rowData?.name}
+                        src={rowData?.image}
+                        sx={{ width: 36, height: 36 }}
+                    />
+                </Box>
+            },
+        },
+        {
+            id: "session",
             label: "Name",
             renderCell: (rowData) => {
                 return rowData?.name
             },
         },
         {
-            id: "Status",
+            id: "Created by",
             label: "Created By",
             renderCell: (rowData) => {
                 return rowData?.createdByName
@@ -34,13 +48,13 @@ export function useCategoryColumn(setEditData, handleOpenModal,setSearch) {
         },
         {
             id: "Created",
-            label: "Created",
+            label: "Created At",
             width: 250,
             renderCell: (rowData) => dayjs(rowData?.createdAt).format('DD/MM/YYYY hh:mm A'),
         },
         {
             id: "Edited at",
-            label: "Edited at",
+            label: "Edited At",
             renderCell: (rowData) => dayjs(rowData?.updatedAt).format('DD/MM/YYYY hh:mm A'),
         },
         {
@@ -62,6 +76,6 @@ export function useCategoryColumn(setEditData, handleOpenModal,setSearch) {
     ];
     const handleSearch = debounce((e) => {
         setSearch(e.target.value)
-      }, 800)
-    return { columns,handleSearch }
+    }, 800)
+    return { columns, handleSearch }
 }
