@@ -43,7 +43,7 @@ export const CreateCategory = ({ open, close, refetch, editData }: CreateCategor
         onSubmit: async (value: InputValues) => {
             let newValue: InputValues = { ...value, status: value.status == 'false' ? false : true }
             if (!editData) {
-                const { errors } = await createCategories({ variables: { ...newValue, image: prevImageFile } });
+                const { errors } = await createCategories({ variables: { ...newValue, image: prevImageFile} });
                 if (errors) {
                     return notify(errors.at(-1)?.message)
                 }
@@ -52,7 +52,7 @@ export const CreateCategory = ({ open, close, refetch, editData }: CreateCategor
                     ...newValue,
                     id: +editData?.id
                 }
-                const { errors } = await updateCategories({ variables: { ...newValue, image: prevImageFile } });
+                const { errors } = await updateCategories({ variables: { ...newValue, image: prevImageFile || prevImage  } });
                 if (errors) {
                     return notify(errors.at(-1)?.message)
                 }
