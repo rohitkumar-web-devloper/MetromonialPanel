@@ -52,7 +52,7 @@ export const CreateCategory = ({ open, close, refetch, editData }: CreateCategor
                     ...newValue,
                     id: +editData?.id
                 }
-                const { errors } = await updateCategories({ variables: { ...newValue, image: prevImageFile || prevImage  } });
+                const { errors } = await updateCategories({ variables: { ...newValue, image: prevImageFile || undefined  } });
                 if (errors) {
                     return notify(errors.at(-1)?.message)
                 }

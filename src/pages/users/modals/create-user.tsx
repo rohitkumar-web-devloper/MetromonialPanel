@@ -96,7 +96,7 @@ export const CreateUsersModal = ({ open, close, refetch, editData, isProfile }: 
                     const { data, errors } = await updateUser({
                         variables: {
                             ...newValue,
-                            profile: prevImageFile
+                            profile: prevImageFile || undefined
                         }
                     });
                     if (errors) {

@@ -66,7 +66,7 @@ export function usePackage(setEditData, handleOpenModal, setSearch) {
             label: "Slots",
             renderCell: (rowData: { timeSlots: string }) => {
 
-                return rowData?.timeSlots ? JSON.parse(rowData?.timeSlots).length : 0
+                return rowData?.timeSlots ? rowData?.timeSlots.length : 0
             },
         },
         {

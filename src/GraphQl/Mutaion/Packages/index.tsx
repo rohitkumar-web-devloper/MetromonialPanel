@@ -1,15 +1,20 @@
 import { gql } from "@apollo/client";
 
 const PACAKGE_POST = gql`
-  mutation createPlan($name: String, $image: Upload = null, $description: String, $price: Int, $credits: Int, $timeSlots: String, $type: String, $status: Boolean) {
-    createPlan(name: $name, image: $image, description: $description, price: $price, credits: $credits, timeSlots: $timeSlots, type: $type, status: $status) {
+  mutation createPlan($name: String, $image: Upload, $description: String, $price: Int, $credits: Int, $type: String, $status: Boolean, $timeSlots: [Int!]!) {
+    createPlan(name: $name, image: $image, description: $description, price: $price, credits: $credits, type: $type, status: $status, timeSlots: $timeSlots) {
     id
     name
     image
     description
     price
     credits
-    timeSlots
+    timeSlots {
+      endTime
+      planId
+      startTime
+      timeSlotId
+    }
     type
     status
     createdAt
@@ -18,18 +23,25 @@ const PACAKGE_POST = gql`
   }
 `;
 const PACAKGE_PUT = gql`
-  mutation updatePlan($id: ID!,$name: String,  $description: String, $price: Int, $credits: Int, $timeSlots: String, $type: String, $status: Boolean, $image: Upload = null) {
-    updatePlan(id:$id, name: $name, description: $description, price: $price, credits: $credits, timeSlots: $timeSlots, type: $type, status: $status, image:$image) {
-    id
-    name
-    image
-    description
-    price
+  mutation updatePlan($id: ID!, $name: String, $description: String, $price: Int, $credits: Int, $timeSlots: [Int!], $type: String, $status: Boolean, $image: Upload) {
+    updatePlan(id: $id, name: $name, description: $description, price: $price, credits: $credits, timeSlots: $timeSlots, type: $type, status: $status, image: $image) {
+      createdAt
     credits
-    timeSlots
-    type
+    description
+    id
+    image
+    name
+    price
     status
-    createdAt
+    timeSlots {
+      planId
+      slots {
+        endTime
+        startTime
+      }
+      timeSlotId
+    }
+    type
     updatedAt
     }
   }
