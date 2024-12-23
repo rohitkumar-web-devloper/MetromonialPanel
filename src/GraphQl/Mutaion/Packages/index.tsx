@@ -10,9 +10,11 @@ const PACAKGE_POST = gql`
     price
     credits
     timeSlots {
-      endTime
       planId
-      startTime
+      slots {
+        endTime
+        startTime
+      }
       timeSlotId
     }
     type
