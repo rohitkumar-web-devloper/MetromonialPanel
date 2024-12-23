@@ -6,4 +6,6 @@ export enum urls {
     CUSTOMERS = "/customers",
     Packages = "/packages",
     SLOTS = "/slots",
+    STATE = "/state",
+    CITIES = "cities/:id",
 }
