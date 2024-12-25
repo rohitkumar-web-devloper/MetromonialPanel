@@ -78,7 +78,8 @@ export const CreatePackage = ({
       let newValue = {
         ...value,
         status: value.status == 'false' ? false : true,
-        timeSlots: selectSlots
+        timeSlots: selectSlots,
+        price:+value?.price
       }
       if (!editData) {
         delete newValue.id
@@ -98,7 +99,13 @@ export const CreatePackage = ({
       }
 
       refetch()
-      notify('Create Successfully', 'success')
+      if(!editData){
+
+        notify('Create Successfully', 'success')
+      }else{
+        notify('Update Successfully', 'success')
+
+      }
       close()
     }
   })

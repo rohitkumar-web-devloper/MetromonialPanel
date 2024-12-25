@@ -1,8 +1,8 @@
 import { gql } from "@apollo/client";
 
 const PACAKGE_POST = gql`
-  mutation createPlan($name: String, $image: Upload, $description: String, $price: Int, $credits: Int, $type: String, $status: Boolean, $timeSlots: [Int!]!) {
-    createPlan(name: $name, image: $image, description: $description, price: $price, credits: $credits, type: $type, status: $status, timeSlots: $timeSlots) {
+  mutation createPlan($timeSlots: [Int!]!, $name: String, $image: Upload, $description: String, $price: Int, $credits: Int, $type: String, $status: Boolean) {
+    createPlan(timeSlots: $timeSlots, name: $name, image: $image, description: $description, price: $price, credits: $credits, type: $type, status: $status) {
     id
     name
     image
