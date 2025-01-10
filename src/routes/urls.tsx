@@ -8,4 +8,5 @@ export enum urls {
     SLOTS = "/slots",
     STATE = "/state",
     CITIES = "cities/:id",
+    CUSTOMER_DETAILS = "details/:id",
 }

@@ -1,8 +1,10 @@
 import { Avatar, Box, Chip, IconButton } from '@mui/material';
 import dayjs from 'dayjs';
 import { debounce } from 'lodash'
-import EditIcon from '@mui/icons-material/Edit';
+import RemoveRedEyeIcon from '@mui/icons-material/RemoveRedEye'
+import { useNavigate } from 'react-router-dom';
 export const useCustomer = (setSearch) => {
+const navigate =     useNavigate()
     const columns = [
         {
             id: "SI No",
@@ -78,8 +80,8 @@ export const useCustomer = (setSearch) => {
             renderCell: (rowData: any) => {
                 return (
                     <>
-                        <IconButton >
-                            <EditIcon />
+                        <IconButton onClick={()=>navigate(`details/${rowData?.id}`)} >
+                            <RemoveRedEyeIcon />
                         </IconButton>
                     </>
                 );

@@ -5,6 +5,7 @@ import { urls } from './urls'
 import {
   CategoryPage,
   CityPage,
+  CustomerDetails,
   CustomerPage,
   DashboardPage,
   PackagesPage,
@@ -86,10 +87,22 @@ export const root = [
       },
       {
         path: urls.CUSTOMERS,
-        element: <CustomerPage />,
         handle: {
           crumb: () => ({ label: 'Customers List' })
-        }
+        },
+        children: [
+          {
+            index: true,
+            element: <CustomerPage />
+          },
+          {
+            path: urls.CUSTOMER_DETAILS,
+            element: <CustomerDetails />,
+            handle: {
+              crumb: () => ({ label: 'Customer Details' })
+            }
+          }
+        ]
       },
       {
         path: urls.Packages,
