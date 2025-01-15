@@ -1,13 +1,11 @@
 import { Box, Chip, Grid2, Paper, Skeleton, Stack, Typography } from '@mui/material'
 import { useQuery } from '@apollo/client';
 import { CUSTOMERS_DETAILS_GET } from '@/GraphQl';
-import dayjs from 'dayjs';
+import { useParams } from 'react-router-dom';
 
 export const CustomerDetails = () => {
-
-    const { data, loading } = useQuery(CUSTOMERS_DETAILS_GET, { variables: { createdById: 1 } })
-    console.log(data?.ads, "data");
-
+    const { id } = useParams()
+    const { data, loading } = useQuery(CUSTOMERS_DETAILS_GET, { variables: { createdById: +id } })
     return (
         <Box sx={{ marginTop: "20px" }}>
             <Stack direction='row' gap={2} justifyContent={{ xs: "space-between" }} alignContent="center" marginBottom="40px" flexWrap="wrap">

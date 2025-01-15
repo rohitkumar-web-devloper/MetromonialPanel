@@ -21,6 +21,7 @@ export const CUSTOMERS_GET = gql`
     }
   }
 `;
+
 export const CUSTOMERS_DETAILS_GET = gql`
   query ads($createdById: Int) {
     ads(createdById: $createdById) {
