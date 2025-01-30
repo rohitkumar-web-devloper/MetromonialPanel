@@ -32,7 +32,7 @@ const validationSchema = Yup.object({
   price: Yup.number()
     .required('Price is required')
     .positive('Price must be a positive number')
-    .min(1, 'Price must be at least 1'),
+    .min(0, 'Price must be at least 0'),
   credits: Yup.number()
     .required('Credits are required')
     .positive('Credits must be a positive number')

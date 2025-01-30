@@ -32,6 +32,7 @@ export const CUSTOMERS_DETAILS_GET = gql`
     }
     bodyType
     breast
+    planType
     category
     categoryId
     city

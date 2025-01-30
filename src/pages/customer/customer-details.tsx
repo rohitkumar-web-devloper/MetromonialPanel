@@ -54,6 +54,9 @@ export const CustomerDetails = () => {
                                             Description :  {it?.description}
                                         </Typography>
                                         <Typography variant="subtitle2">
+                                            Type :  {it?.planType}
+                                        </Typography>
+                                        <Typography variant="subtitle2">
                                             Customer Name  :    {it?.createdByName}
                                         </Typography>
                                         <Typography variant="subtitle2">
