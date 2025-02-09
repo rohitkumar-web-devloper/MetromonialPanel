@@ -12,7 +12,7 @@ import { LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
 function App() {
   const uploadLink = createUploadLink({
-    uri: 'http://localhost:7575/graphql', // Update with your GraphQL endpoint
+    uri: import.meta.env.VITE_BASE_URL, // Update with your GraphQL endpoint
 
   });
   const authLink = setContext((_, { headers }) => {
